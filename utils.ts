@@ -7,21 +7,23 @@ export function respond(text: string): Response {
 
 export async function sendWhatsApp(to: string, body: string) {
   try {
+    console.log("🔍 Entered sendWhatsApp()");
+
     const sid = Deno.env.get("TWILIO_ACCOUNT_SID");
     const token = Deno.env.get("TWILIO_AUTH_TOKEN");
     const from = Deno.env.get("TWILIO_PHONE_NUMBER");
 
-    console.log("🧪 TWILIO_ACCOUNT_SID:", sid);
-    console.log("🧪 TWILIO_AUTH_TOKEN:", token ? "(hidden)" : "MISSING");
-    console.log("🧪 TWILIO_PHONE_NUMBER:", from);
+    console.log("🧪 SID:", sid ? "[OK]" : "❌ MISSING");
+    console.log("🧪 Token:", token ? "[OK]" : "❌ MISSING");
+    console.log("🧪 From:", from ? from : "❌ MISSING");
 
     if (!sid || !token || !from) {
-      console.error("❌ Missing Twilio env vars");
+      console.error("❌ One or more Twilio environment variables are missing.");
       return;
     }
 
     const creds = btoa(`${sid}:${token}`);
-    console.log("📨 Sending WhatsApp to:", to);
+    console.log("📨 Preparing to send WhatsApp message...");
 
     const form = new URLSearchParams({ To: to, From: from, Body: body });
 
@@ -39,6 +41,6 @@ export async function sendWhatsApp(to: string, body: string) {
     console.log("📬 Twilio response body:", result);
 
   } catch (err) {
-    console.error("❌ Error sending WhatsApp message:", err);
+    console.error("❌ sendWhatsApp() failed:", err);
   }
 }
