@@ -11,9 +11,12 @@ export async function sendWhatsApp(to: string, body: string) {
   const from = Deno.env.get("TWILIO_PHONE_NUMBER")!;
   const creds = btoa(`${sid}:${token}`);
 
+  console.log("📨 Sending WhatsApp to:", to);
+  console.log("📨 Message:", body);
+
   const form = new URLSearchParams({ To: to, From: from, Body: body });
 
-  await fetch(`https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`, {
+  const res = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`, {
     method: "POST",
     headers: {
       Authorization: `Basic ${creds}`,
@@ -21,4 +24,8 @@ export async function sendWhatsApp(to: string, body: string) {
     },
     body: form,
   });
+
+  const result = await res.text();
+  console.log("📬 Twilio response status:", res.status);
+  console.log("📬 Twilio response body:", result);
 }
