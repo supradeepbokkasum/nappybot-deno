@@ -78,9 +78,12 @@ export async function handleLog(kv, body, bodyRaw, from, userMeta, today) {
     const sender = role === "primary" ? "Primary" : "Contributor";
     const ack = `✅ Log received: "${logText}"\n👤 Submitted by: ${sender}`;
 
-    for (const m of members) {
-      if (m !== from) await sendWhatsApp(m, ack);
-    }
+const notifyAll = members.length === 1;
+for (const m of members) {
+  if (notifyAll || m !== from) {
+    await sendWhatsApp(m, ack);
+  }
+}
 
     return respond(ack);
   }
