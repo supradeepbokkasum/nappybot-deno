@@ -14,6 +14,8 @@ export async function sendWhatsApp(to: string, body: string) {
 
     console.log("📨 Sending WhatsApp to:", to);
     console.log("📨 Message:", body);
+    console.log("🔐 SID loaded?", !!sid);
+    console.log("🔐 From loaded?", !!from);
 
     const form = new URLSearchParams({ To: to, From: from, Body: body });
 
@@ -29,9 +31,9 @@ export async function sendWhatsApp(to: string, body: string) {
     const result = await res.text();
     console.log("📬 Twilio response status:", res.status);
     console.log("📬 Twilio response body:", result);
-    console.log("🔐 SID loaded?", !!Deno.env.get("TWILIO_ACCOUNT_SID"));
 
   } catch (err) {
     console.error("❌ Error sending WhatsApp message:", err);
   }
 }
+
