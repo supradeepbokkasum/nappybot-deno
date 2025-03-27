@@ -1,14 +1,19 @@
-import { respond, sendWhatsApp } from "./utils.ts";
+import { respond } from "./utils.ts";
 
 export async function handleStart(kv, from, sessionKey, userKey, userMeta) {
   if (userMeta) {
     const { groupId, role } = userMeta;
-    return respond(`👋 You're already part of a baby log group!\n🔗 Group ID: ${groupId}\nRole: ${role === "primary" ? "👤 Primary" : "🤝 Contributor"}`);
+    return respond(
+      `👋 You're already part of a baby log group!\n🔗 Group ID: ${groupId}\nRole: ${role === "primary" ? "👤 Primary" : "🤝 Contributor"}`
+    );
   }
 
   await kv.set(sessionKey, { step: "awaiting_role" });
-  return respond("👋 Welcome to NappyBot!\nAre you the primary caregiver or a contributor?\n\n1️⃣ Primary\n2️⃣ Contributor");
+  return respond(
+    "👋 Welcome to NappyBot!\nAre you the primary caregiver or a contributor?\n\n1️⃣ Primary\n2️⃣ Contributor"
+  );
 }
+
 
 export async function handleRoleSelection(kv, body, from, sessionKey, userKey) {
   if (body === "1") {
@@ -70,3 +75,4 @@ export async function handleLog(kv, body, bodyRaw, from, userMeta, today) {
 
   return respond(`✅ Message received.\n._Messages today: ${msgCount}/50_`);
 }
+	
