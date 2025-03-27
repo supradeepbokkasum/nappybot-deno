@@ -9,7 +9,7 @@ export async function sendWhatsApp(to: string, body: string) {
   try {
     const sid = Deno.env.get("TWILIO_ACCOUNT_SID")!;
     const token = Deno.env.get("TWILIO_AUTH_TOKEN")!;
-    const from = Deno.env.get("+61481297630")!;
+    const from = Deno.env.get("TWILIO_PHONE_NUMBER")!;
     const creds = btoa(`${sid}:${token}`);
 
     console.log("📨 Sending WhatsApp to:", to);
