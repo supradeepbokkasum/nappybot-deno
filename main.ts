@@ -3,6 +3,7 @@ import { serve } from "https://deno.land/std/http/server.ts";
 const kv = await Deno.openKv();
 
 serve(async (req) => {
+  console.log("✅ Received a request:", req.method);
   if (req.method !== "POST") {
     return new Response("Only POST supported", { status: 405 });
   }
@@ -11,6 +12,9 @@ serve(async (req) => {
   const from = formData.get("From")?.toString() ?? "";
   const bodyRaw = formData.get("Body")?.toString() ?? "";
   const body = bodyRaw.trim().toLowerCase();
+
+  console.log("📩 Incoming message | From:", from, "| Body:", bodyRaw);
+
   const today = new Date().toISOString().slice(0, 10);
 
   const sessionKey = ["session", from];
