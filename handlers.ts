@@ -45,16 +45,26 @@ export async function handleContributorJoin(kv, groupId, from, sessionKey, userK
 }
 
 export async function handleLog(kv, body, bodyRaw, from, userMeta, today) {
+  console.log("🪵 Entered handleLog with body:", body);
+
   const { groupId, role } = userMeta;
   const countKey = ["msgcount", groupId, today];
   const msgCount = ((await kv.get(countKey)).value as number ?? 0) + 1;
 
-  if (msgCount > 50) return respond("🚫 Group has reached the daily limit (50 messages).");
+  console.log(`🧮 Message count for group ${groupId}: ${msgCount}`);
+
+  if (msgCount > 50) {
+    return respond("🚫 Group has reached the daily limit (50 messages).");
+  }
 
   await kv.set(countKey, msgCount);
 
   if (body.startsWith("/log")) {
-    const logText = bodyRaw.replace(/^\/log\\b/i, "").trim();
+    console.log("✍️ Parsing log message");
+
+    const logText = bodyRaw.replace(/^\/log\b/i, "").trim();
+    console.log("📝 Log text:", logText);
+
     if (!logText) {
       return respond(`📝 What would you like to log?\n1️⃣ Feed\n2️⃣ Sleep\n3️⃣ Diaper\n\nOr type:\n/log 120ml feed at 3pm`);
     }
@@ -63,6 +73,8 @@ export async function handleLog(kv, body, bodyRaw, from, userMeta, today) {
     await kv.set(["log", groupId, Date.now()], log);
 
     const members = (await kv.get(["group", groupId])).value ?? [];
+    console.log("👥 Notifying group members:", members);
+
     const sender = role === "primary" ? "Primary" : "Contributor";
     const ack = `✅ Log received: "${logText}"\n👤 Submitted by: ${sender}`;
 
@@ -75,4 +87,5 @@ export async function handleLog(kv, body, bodyRaw, from, userMeta, today) {
 
   return respond(`✅ Message received.\n._Messages today: ${msgCount}/50_`);
 }
+
 	
